@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        {% if veiculo %}
+            Editar Veículo
+        {% else %}
+            Cadastrar Veículo
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="modelo" class="form-label">Modelo</label>
+                    <input type="text" class="form-control" id="modelo" name="modelo" value="{{ veiculo.modelo if veiculo else '' }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="marca" class="form-label">Marca</label>
+                    <input type="text" class="form-control" id="marca" name="marca" value="{{ veiculo.marca if veiculo else '' }}" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="ano" class="form-label">Ano</label>
+                    <input type="number" class="form-control" id="ano" name="ano" value="{{ veiculo.ano if veiculo else '' }}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="placa" class="form-label">Placa</label>
+                    <input type="text" class="form-control" id="placa" name="placa" value="{{ veiculo.placa if veiculo else '' }}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="cor" class="form-label">Cor</label>
+                    <input type="text" class="form-control" id="cor" name="cor" value="{{ veiculo.cor if veiculo else '' }}" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                {% if veiculo %}
+                    Atualizar
+                {% else %}
+                    Cadastrar
+                {% endif %}
+            </button>
+            <a href="{{ url_for('main.listagem') }}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
