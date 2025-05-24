@@ -7,8 +7,12 @@ class Usuario(UserMixin, db.Model):
     __tablename__ = 'usuarios'
     
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    # --- CAMPOS ALTERADOS E NOVOS ---
+    nome_completo = db.Column(db.String(150), nullable=False)
+    data_nascimento = db.Column(db.Date, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False) # Trocamos username por email
+    password_hash = db.Column(db.String(512), nullable=False) # Aumentado o tamanho
+    # --- FIM DAS ALTERAÇÕES ---
     admin = db.Column(db.Boolean, default=False)
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
     

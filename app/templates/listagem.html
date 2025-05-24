@@ -1,27 +1,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Veículos Cadastrados</span>
-        <a href="{{ url_for('main.cadastro') }}" class="btn btn-primary btn-sm">Novo Veículo</a>
+<div class="card shadow-sm">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Veículos Cadastrados</h4>
+        {% if current_user.is_authenticated and current_user.admin %}
+            <a href="{{ url_for('main.cadastro_veiculo') }}" class="btn btn-primary btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+                </svg>
+                Novo Veículo
+            </a>
+        {% endif %}
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Modelo</th>
-                        <th>Marca</th>
-                        <th>Ano</th>
-                        <th>Placa</th>
-                        <th>Cor</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if veiculos %}
+        {% if not current_user.admin and veiculos|length == 0 %}
+             <p class="text-center">Nenhum veículo disponível para visualização no momento.</p>
+        {% elif current_user.admin and veiculos|length == 0 %}
+             <p class="text-center">Nenhum veículo cadastrado. <a href="{{ url_for('main.cadastro_veiculo') }}">Cadastre o primeiro!</a></p>
+        {% elif veiculos %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Modelo</th>
+                            <th>Marca</th>
+                            <th>Ano</th>
+                            <th>Placa</th>
+                            <th>Cor</th>
+                            {% if current_user.is_authenticated and current_user.admin %}
+                                <th>Ações</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
                         {% for veiculo in veiculos %}
                             <tr>
                                 <td>{{ veiculo.id }}</td>
@@ -30,20 +43,45 @@
                                 <td>{{ veiculo.ano }}</td>
                                 <td>{{ veiculo.placa }}</td>
                                 <td>{{ veiculo.cor }}</td>
-                                <td>
-                                    <a href="{{ url_for('main.editar', id=veiculo.id) }}" class="btn btn-sm btn-warning">Editar</a>
-                                    <a href="{{ url_for('main.excluir', id=veiculo.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir este veículo?')">Excluir</a>
-                                </td>
+                                {% if current_user.is_authenticated and current_user.admin %}
+                                    <td>
+                                        <a href="{{ url_for('main.editar', id=veiculo.id) }}" class="btn btn-sm btn-warning me-1" title="Editar">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                            </svg>
+                                        </a>
+                                        <form action="{{ url_for('main.excluir', id=veiculo.id) }}" method="POST" style="display: inline;">
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este veículo: {{ veiculo.marca }} {{ veiculo.modelo }} ({{ veiculo.placa }})?');">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center">Nenhum veículo cadastrado.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        {% if current_user.is_authenticated and not current_user.admin and veiculos %}
+            <hr class="my-4">
+            <h5 class="mb-3">Interagir com Veículos (Compra/Lance)</h5>
+            <p><em>(Funcionalidade de compra e lance a ser implementada aqui para usuários comuns)</em></p>
+            {% for veiculo in veiculos %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ veiculo.marca }} {{ veiculo.modelo }} - {{ veiculo.ano }}</h6>
+                        <p class="card-text">Placa: {{ veiculo.placa }}, Cor: {{ veiculo.cor }}</p>
+                        <button class="btn btn-sm btn-success me-2" disabled>Dar Lance (Em breve)</button>
+                        <button class="btn btn-sm btn-info" disabled>Comprar (Em breve)</button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}

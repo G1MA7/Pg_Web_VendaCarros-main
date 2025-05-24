@@ -1,5 +1,6 @@
 from app import create_app, db
 from app.models import Usuario, Veiculo
+from datetime import date # Importe date
 
 app = create_app()
 
@@ -7,9 +8,14 @@ app = create_app()
 def create_tables():
     db.create_all()
     
-    # Criar um usuário administrador se não existir
-    if not Usuario.query.filter_by(username='admin').first():
-        admin = Usuario(username='admin', admin=True)
+    # Criar um usuário administrador se não existir (agora com email)
+    if not Usuario.query.filter_by(email='admin@vendacarros.com').first():
+        admin = Usuario(
+            email='admin@vendacarros.com', 
+            admin=True,
+            nome_completo='Administrador',
+            data_nascimento=date(2000, 1, 1) # Data de exemplo
+        )
         admin.set_password('admin123')
         db.session.add(admin)
         db.session.commit()

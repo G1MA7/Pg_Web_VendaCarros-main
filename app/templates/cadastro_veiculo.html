@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header">
-        {% if veiculo %}
-            Editar Veículo
-        {% else %}
-            Cadastrar Veículo
-        {% endif %}
+<div class="card shadow-sm">
+    <div class="card-header bg-info text-white">
+        <h4 class="mb-0">
+            {% if veiculo %}
+                Editar Veículo
+            {% else %}
+                Cadastrar Novo Veículo
+            {% endif %}
+        </h4>
     </div>
     <div class="card-body">
         <form method="POST">
@@ -24,25 +26,27 @@
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <label for="ano" class="form-label">Ano</label>
-                    <input type="number" class="form-control" id="ano" name="ano" value="{{ veiculo.ano if veiculo else '' }}" required>
+                    <input type="number" class="form-control" id="ano" name="ano" value="{{ veiculo.ano if veiculo else '' }}" required min="1900" max="2099">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="placa" class="form-label">Placa</label>
-                    <input type="text" class="form-control" id="placa" name="placa" value="{{ veiculo.placa if veiculo else '' }}" required>
+                    <input type="text" class="form-control" id="placa" name="placa" value="{{ veiculo.placa if veiculo else '' }}" required maxlength="10">
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="cor" class="form-label">Cor</label>
                     <input type="text" class="form-control" id="cor" name="cor" value="{{ veiculo.cor if veiculo else '' }}" required>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">
-                {% if veiculo %}
-                    Atualizar
-                {% else %}
-                    Cadastrar
-                {% endif %}
-            </button>
-            <a href="{{ url_for('main.listagem') }}" class="btn btn-secondary">Cancelar</a>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">
+                    {% if veiculo %}
+                        Atualizar Veículo
+                    {% else %}
+                        Salvar Veículo
+                    {% endif %}
+                </button>
+                <a href="{{ url_for('main.listagem') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
         </form>
     </div>
 </div>
