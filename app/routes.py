@@ -47,20 +47,18 @@ def login():
     return render_template('login.html')
     
 # --- NOVA ROTA: CADASTRO DE USUÁRIO COMUM ---
-@main.route('/register', methods=['GET', 'POST'])
-def register_user():
+@main.route('/cadastro_usuario', methods=['GET', 'POST'])
+def cadastro_usuario(): # Nome da função alterado
     if current_user.is_authenticated:
         return redirect(url_for('main.listagem'))
         
     if request.method == 'POST':
         nome_completo = request.form.get('nome_completo')
-        # Converte a string da data para um objeto date
         data_nascimento_str = request.form.get('data_nascimento')
         data_nascimento = datetime.strptime(data_nascimento_str, '%Y-%m-%d').date()
         email = request.form.get('email')
         password = request.form.get('password')
 
-        # Verifica se o email já existe
         if Usuario.query.filter_by(email=email).first():
             flash('Este email já está cadastrado. Tente fazer login.', 'warning')
             return redirect(url_for('main.login'))
@@ -69,7 +67,7 @@ def register_user():
             nome_completo=nome_completo,
             data_nascimento=data_nascimento,
             email=email,
-            admin=False # Garante que o usuário cadastrado não é admin
+            admin=False
         )
         new_user.set_password(password)
         db.session.add(new_user)
@@ -77,8 +75,9 @@ def register_user():
         
         flash('Cadastro realizado com sucesso! Faça seu login.', 'success')
         return redirect(url_for('main.login'))
-        
-    return render_template('register_user.html')
+    
+    # Renderiza o template com o novo nome em português
+    return render_template('cadastro_usuario.html', title="Cadastro de Usuário")
 
 @main.route('/logout')
 @login_required

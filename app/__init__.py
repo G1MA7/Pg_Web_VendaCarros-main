@@ -7,8 +7,8 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 
 # ALTERAÇÃO: Redireciona para a rota de cadastro de usuário
-# O nome da rota será 'main.register_user' que criaremos no passo 4
-login_manager.login_view = 'main.register_user'
+# O nome da rota será 'main.cadastro_usuario' que criaremos no passo 4
+login_manager.login_view = 'main.cadastro_usuario' 
 login_manager.login_message = "Você precisa se cadastrar ou fazer login para acessar esta página."
 login_manager.login_message_category = "info"
 
