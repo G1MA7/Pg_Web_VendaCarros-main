@@ -55,7 +55,7 @@ def cadastro_usuario(): # Nome da função alterado
     if request.method == 'POST':
         nome_completo = request.form.get('nome_completo')
         data_nascimento_str = request.form.get('data_nascimento')
-        data_nascimento = datetime.strptime(data_nascimento_str, '%Y-%m-%d').date()
+        data_nascimento = datetime.strptime(data_nascimento_str, '%d-%m-%Y').date()
         email = request.form.get('email')
         password = request.form.get('password')
 
